@@ -8,7 +8,7 @@ with open(os.path.join(here, 'README.md')) as f:
 
 requires = [
     'scrapy==1.6.0',
-
+    'SQLAlchemy==1.3.3'
 ]
 
 tests_require = [
