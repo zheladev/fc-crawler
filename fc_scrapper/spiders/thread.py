@@ -74,10 +74,11 @@ def get_content(content):
     #   [x] 3: Quote & text w/o breaks
     #   [x] 4: Quote & text w/ breaks
     #   [ ] 5: Text with quote(s) in between
+
+    # FIXME: raw_message_lines may break if quote is found
+    #        in between two bodies of text
     garbage_filter = re.compile('(\n|\r|\t)+')
 
-    # FIXME: Probably breaks if quote is found
-    #        in between two bodies of text
     raw_message_lines = content.xpath(
         './div[contains(@id, "post_message_")]'
         '/following-sibling::text()').extract()
@@ -90,20 +91,6 @@ def get_content(content):
     message_lines = list(filter(bool,
                                 (map(lambda m: garbage_filter.sub('', m),
                                      raw_message_lines))))
-
-    # print('raw data: \n', content.extract())
-    # print("quotes without text(): \n",
-    #       content.xpath('./div[contains(@style, ":") and not(@id)]')
-    #       .extract())
-    # print("\nquotes with text(): \n", clean_quotes)
-    # print("clean_message_lines \n", message_lines)
-    # print("\nmessage content: \n", content.xpath(
-    #     './div[contains(@id, "post_message_")]'
-    #     '/following-sibling::text()').extract())
-
-    # !! if quote and quote has a href to another post then there's no need
-    # to save said quote, look into having relationships in between
-    # comments
     return {
         'quotes': clean_quotes,
         'message_lines': message_lines
