@@ -8,10 +8,10 @@ Paste the following in it:
 ```
 DATABASE = {
     'drivername': 'postgres',
-    'host': 'localhost',
-    'port': '5432',
+    'host': 'HOST',
+    'port': 'PORT',
     'username': 'YOUR_USERNAME',
     'password': 'YOUR_PASSWORD',
-    'database': 'fcarchive'
+    'database': 'DB_NAME'
 }
 ```
