@@ -1,10 +1,13 @@
 import scrapy
-from scrapy import Spider
+from scrapy.spiders import CrawlSpider
 
 
 class ThreadSpider(CrawlSpider):
     name = 'fc_thread_spider'
+    allowed_domains = ['forocoches.es']
+    start_urls = [
 
+    ]
     def start_requests(self):
         urls = [
             'https://www.forocoches.com/foro/showthread.php?t=7203162'

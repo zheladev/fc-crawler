@@ -8,12 +8,14 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import config
 
 BOT_NAME = 'fc_scrapper'
 
 SPIDER_MODULES = ['fc_scrapper.spiders']
 NEWSPIDER_MODULE = 'fc_scrapper.spiders'
 
+DATABASE = config.DATABASE
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'fc_scrapper (+http://www.yourdomain.com)'
