@@ -6,6 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 
-class FcScrapperPipeline(object):
+# TODO: decide on naming convention, thread spider calls posts pipeline
+class PostsPipeline(object):
     def process_item(self, item, spider):
         return item
