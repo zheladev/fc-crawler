@@ -53,20 +53,18 @@ class ThreadSpider(CrawlSpider):
             print('NEW POST')
             post['thread_id'] = thread['id_']
             for attr, xpath in self.post_item_fields.items():
-                post[attr] = self.get_attr(attr, item.xpath(xpath))
+                post[attr] = get_attr(attr, item.xpath(xpath))
             yield post
 
-    def get_attr(self, attr, xpath):
-        _lambdas = {
-            'id_': lambda x: x.get()[4:],
-            'user_id': lambda x: x.get().split('=')[-1:][0],
-            'posted_at': lambda x: x.get()[5:-10],
-            'content': lambda x: self.get_content(x)
-        }
-        if attr == 'content':
-            # import pdb;pdb.set_trace()
-            pass
-        return _lambdas[attr](xpath)
+
+def get_attr(attr, xpath):
+    _lambdas = {
+        'id_': lambda x: x.get()[4:],
+        'user_id': lambda x: x.get().split('=')[-1:][0],
+        'posted_at': lambda x: x.get()[5:-10],
+        'content': lambda x: get_content(x)
+    }
+    return _lambdas[attr](xpath)
 
 
 def get_content(content):
@@ -83,7 +81,7 @@ def get_content(content):
     raw_message_lines = content.xpath(
         './div[contains(@id, "post_message_")]'
         '/following-sibling::text()').extract()
-    
+
     raw_quotes = content.xpath(
         './div[contains(@style, ":") and not(@id)]//text()').extract()
     clean_quotes = list(filter(lambda x: not garbage_filter.search(x),
