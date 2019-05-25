@@ -1,5 +1,5 @@
 from scrapy.spiders import CrawlSpider
-
+from fc_scrapper.items.post import PostItem
 from fc_scrapper.items.thread import ThreadItem
 
 
@@ -14,11 +14,14 @@ class ThreadSpider(CrawlSpider):
     posts_list_xpath = "//div[@id='posts']/div/div/div/div/table[@id]"
 
     post_item_fields = {
-        'fc_id': '',
-        'thread': '',
-        'user_id': '',
-        'posted_at': '',
-        'content': ''
+        'id_':
+            './@id',
+        'user_id':
+            './/a[@class="bigusername"]/@href',
+        'posted_at':
+            './tr/td/a[contains(@name, "post")]/following-sibling::text()',
+        'content':
+            './/div[contains(@id, "post_message_")]/following-sibling::text()'
     }
 
     start_urls = [
@@ -42,7 +45,24 @@ class ThreadSpider(CrawlSpider):
 
         yield thread
 
-        print('\n\n\n\n\n\n\n\n\n\n')
-        # import pdb; pdb.set_trace()
         for item in selector.xpath(self.posts_list_xpath):
-            print(item)
+            post = PostItem()
+            post['thread_id'] = thread['id_']
+            for attr, xpath in self.post_item_fields.items():
+                post[attr] = self.get_attr(attr, item.xpath(xpath))
+            yield post
+
+    def get_attr(self, attr, xpath):
+        _lambdas = {
+            'id_': lambda x: x.get()[4:],
+            'user_id': lambda x: x.get().split('=')[-1:][0],
+            'posted_at': lambda x: x.get()[5:-10],
+            'content': lambda x: x.get()[4:]
+        }
+
+        return _lambdas[attr](xpath)
+
+    def get_content(self, attr, content):
+        #TODO: get HOTWordsTxt (citas)
+        #TODO: get text
+        pass
