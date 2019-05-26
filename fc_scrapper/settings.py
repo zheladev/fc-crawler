@@ -17,6 +17,9 @@ NEWSPIDER_MODULE = 'fc_scrapper.spiders'
 
 DATABASE = config.DATABASE
 
+# LOG_FILE = config.LOG_FILE
+#
+# LOG_LEVEL = config.LOG_LEVEL
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'fc_scrapper (+http://www.yourdomain.com)'
 
@@ -67,7 +70,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'fc_scrapper.pipelines.thread.PostsPipeline': 300,
+    'fc_scrapper.pipelines.thread.ThreadPipeline': 300,
+    'fc_scrapper.pipelines.post.PostPipeline': 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+from fc_scrapper.items.thread import ThreadItem
 
 
-# TODO: decide on naming convention, thread spider calls posts pipeline
-class PostsPipeline(object):
+class ThreadPipeline(object):
     def process_item(self, item, spider):
+        if isinstance(item, ThreadItem):
+            print('thread!')
+            pass
+
         return item

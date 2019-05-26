@@ -1,45 +1,65 @@
 import re
 
-from scrapy.spiders import CrawlSpider
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider, Rule
 
 from fc_scrapper.items.post import PostItem
 from fc_scrapper.items.thread import ThreadItem
 
+THREAD_PAGES_AREA_XPATH = './/div[@class="pagenav"]'
+THREAD_PAGES_RE = r'(.+)(t=[0-9]+)((&page=[0-9]+)|())'
+
+FORUM_THREADS_AREA_XPATH = '//tbody[contains(@id, "threadbits_forum")]'
+FORUM_THREADS_RE = r'(.+)(php\?t=[0-9]+)$'
+
+POSTS_LIST_XPATH = "//div[@id='posts']/div/div/div/div/table[@id]"
+
+POST_ITEM_XPATH_FIELDS = {
+    'id_':
+        './@id',
+    'user_id':
+        './/a[@class="bigusername"]/@href',
+    'posted_at':
+        './tr/td/a[contains(@name, "post")]/following-sibling::text()',
+    'content':
+        './/td[contains(@id, "td_post_")]/div[@id="HOTWordsTxt"]/..'
+}
+
 
 class ThreadSpider(CrawlSpider):
     """
-    Crawls a thread from first to last page and returns all posts
+    Crawls a subforum for threads and returns all posts
     """
     name = 'fc_thread_spider'
-
-    allowed_domains = ['forocoches.es']
-
-    posts_list_xpath = "//div[@id='posts']/div/div/div/div/table[@id]"
-
-    post_item_fields = {
-        'id_':
-            './@id',
-        'user_id':
-            './/a[@class="bigusername"]/@href',
-        'posted_at':
-            './tr/td/a[contains(@name, "post")]/following-sibling::text()',
-        'content':
-            './/td[contains(@id, "td_post_")]/div[@id="HOTWordsTxt"]/..'
-    }
+    allowed_domains = ['forocoches.com']
 
     start_urls = [
-        'https://www.forocoches.com/foro/showthread.php?t=7203803'
+        # 'https://www.forocoches.com/foro/showthread.php?t=7203803'
+        # 'https://www.forocoches.com/foro/showthread.php?t=7203474'
+        'https://www.forocoches.com/foro/forumdisplay.php?f=2'
     ]
 
-    # rules = [
-    #     Rule(
-    #         link_extractor=LinkExtractor(
-    #             allow='(.+)(t=[0-9]+)((&page=[0-9]+)|())'),
-    #         callback='parse', follow=True),
-    # ]
+    rules = [
+        Rule(
+            link_extractor=LinkExtractor(
+                allow=FORUM_THREADS_RE,
+                restrict_xpaths=FORUM_THREADS_AREA_XPATH),
+            callback='parse_items', follow=True),
+        Rule(
+            link_extractor=LinkExtractor(
+                allow=THREAD_PAGES_RE,
+                restrict_xpaths=THREAD_PAGES_AREA_XPATH),
+            callback='parse_items', follow=True)
+    ]
 
-    def parse(self, response):
+    def parse_thread(self, response):
+        # TODO: get all threads from forum page, iterate through them
+        #       and save their data instead of doing it in parse_items
+        pass
+
+    def parse_items(self, response):
         selector = response.selector
+        print(f'Crawling: {response.url}')
 
         thread = ThreadItem()
         thread['id_'] = response.url.split('=')[-1:][0]
@@ -48,11 +68,10 @@ class ThreadSpider(CrawlSpider):
 
         yield thread
 
-        for item in selector.xpath(self.posts_list_xpath):
+        for item in selector.xpath(POSTS_LIST_XPATH):
             post = PostItem()
-            print('NEW POST')
             post['thread_id'] = thread['id_']
-            for attr, xpath in self.post_item_fields.items():
+            for attr, xpath in POST_ITEM_XPATH_FIELDS.items():
                 post[attr] = get_attr(attr, item.xpath(xpath))
             yield post
 
@@ -74,6 +93,11 @@ def get_content(content):
     #   [x] 3: Quote & text w/o breaks
     #   [x] 4: Quote & text w/ breaks
     #   [ ] 5: Text with quote(s) in between
+
+    # TODO: save quotes as references instead of value
+    #       check if quote contains reference to other post
+    #       if post, save reference
+    #       else, save contents in message itself
 
     # FIXME: raw_message_lines may break if quote is found
     #        in between two bodies of text
