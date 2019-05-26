@@ -8,12 +8,12 @@
 
 # TODO: decide on naming convention, thread spider calls posts pipeline
 from fc_scrapper.items.post import PostItem
+from fc_scrapper.pipelines.base import BasePipeline
 
 
-class PostPipeline(object):
+class PostPipeline(BasePipeline):
     def process_item(self, item, spider):
         if isinstance(item, PostItem):
-            print('post!')
             pass
 
         return item

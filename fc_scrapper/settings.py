@@ -20,7 +20,8 @@ DATABASE = config.DATABASE
 # LOG_FILE = config.LOG_FILE
 #
 # LOG_LEVEL = config.LOG_LEVEL
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
+# Crawl responsibly by identifying yourself (and your website) on the
+# user-agent
 # USER_AGENT = 'fc_scrapper (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
@@ -45,7 +46,8 @@ ROBOTSTXT_OBEY = True
 
 # Override the default request headers:
 # DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+#   'Accept':
+#       'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
 # }
 

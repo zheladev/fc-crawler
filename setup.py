@@ -8,7 +8,8 @@ with open(os.path.join(here, 'README.md')) as f:
 
 requires = [
     'scrapy==1.6.0',
-    'SQLAlchemy==1.3.3'
+    'SQLAlchemy==1.3.3',
+    'psycopg2-binary==2.7.6.1',
 ]
 
 tests_require = [
@@ -20,7 +21,8 @@ quality_require = [
 ]
 
 scripts = [
-
+    'initdb = '
+    'fc_scrapper.scripts.initdb:main',
 ]
 
 setup(

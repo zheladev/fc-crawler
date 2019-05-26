@@ -15,9 +15,9 @@ FORUM_THREADS_RE = r'(.+)(php\?t=[0-9]+)$'
 POSTS_LIST_XPATH = "//div[@id='posts']/div/div/div/div/table[@id]"
 
 POST_ITEM_XPATH_FIELDS = {
-    'id_':
+    'fc_id':
         './@id',
-    'user_id':
+    'user_fc_id':
         './/a[@class="bigusername"]/@href',
     'posted_at':
         './tr/td/a[contains(@name, "post")]/following-sibling::text()',
@@ -61,16 +61,19 @@ class ThreadSpider(CrawlSpider):
         selector = response.selector
         print(f'Crawling: {response.url}')
 
+        thread_url = response.url
+        thread_id = re.search('t=([0-9]+).*', thread_url).group(1)
+
         thread = ThreadItem()
-        thread['id_'] = response.url.split('=')[-1:][0]
+        thread['fc_id'] = thread_id
         thread['title'] = response.css(f'span.cmega::text').extract_first()
-        thread['user_id'] = 'placeholder'
+        thread['user_fc_id'] = 1
 
         yield thread
 
         for item in selector.xpath(POSTS_LIST_XPATH):
             post = PostItem()
-            post['thread_id'] = thread['id_']
+            post['thread_id'] = thread['fc_id']
             for attr, xpath in POST_ITEM_XPATH_FIELDS.items():
                 post[attr] = get_attr(attr, item.xpath(xpath))
             yield post
@@ -78,8 +81,8 @@ class ThreadSpider(CrawlSpider):
 
 def get_attr(attr, xpath):
     _lambdas = {
-        'id_': lambda x: x.get()[4:],
-        'user_id': lambda x: x.get().split('=')[-1:][0],
+        'fc_id': lambda x: x.get()[4:],
+        'user_fc_id': lambda x: x.get().split('=')[-1:][0],
         'posted_at': lambda x: x.get()[5:-10],
         'content': lambda x: get_content(x)
     }

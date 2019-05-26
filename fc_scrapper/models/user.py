@@ -6,7 +6,7 @@ from fc_scrapper.models.base import BaseModel, Base
 
 class User(Base, BaseModel):
     __table_args__ = (UniqueConstraint('fc_id',
-                                       name='id_uc'))
+                                       name='user_id_uc'),)
 
     fc_id = Column(Integer,
                    index=True, unique=True, nullable=False)
