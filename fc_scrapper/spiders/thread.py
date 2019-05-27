@@ -4,13 +4,9 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 
 from fc_scrapper.items.post import PostItem
-from fc_scrapper.items.thread import ThreadItem
 
 THREAD_PAGES_AREA_XPATH = './/div[@class="pagenav"]'
-THREAD_PAGES_RE = r'(.+)(t=[0-9]+)((&page=[0-9]+)|())'
-
-FORUM_THREADS_AREA_XPATH = '//tbody[contains(@id, "threadbits_forum")]'
-FORUM_THREADS_RE = r'(.+)(php\?t=[0-9]+)$'
+THREAD_PAGES_RE = r'(.+)(t=[0-9]+)((&page=[0-9]+)|())?'
 
 POSTS_LIST_XPATH = "//div[@id='posts']/div/div/div/div/table[@id]"
 
@@ -33,29 +29,11 @@ class ThreadSpider(CrawlSpider):
     name = 'fc_thread_spider'
     allowed_domains = ['forocoches.com']
 
-    start_urls = [
-        # 'https://www.forocoches.com/foro/showthread.php?t=7203803'
-        # 'https://www.forocoches.com/foro/showthread.php?t=7203474'
-        'https://www.forocoches.com/foro/forumdisplay.php?f=2'
-    ]
-
-    rules = [
-        Rule(
-            link_extractor=LinkExtractor(
-                allow=FORUM_THREADS_RE,
-                restrict_xpaths=FORUM_THREADS_AREA_XPATH),
-            callback='parse_items', follow=True),
-        Rule(
-            link_extractor=LinkExtractor(
-                allow=THREAD_PAGES_RE,
-                restrict_xpaths=THREAD_PAGES_AREA_XPATH),
-            callback='parse_items', follow=True)
-    ]
-
-    def parse_thread(self, response):
-        # TODO: get all threads from forum page, iterate through them
-        #       and save their data instead of doing it in parse_items
-        pass
+    rules = Rule(
+        link_extractor=LinkExtractor(
+            allow=THREAD_PAGES_RE,
+            restrict_xpaths=THREAD_PAGES_AREA_XPATH),
+        callback='parse_items', follow=True),
 
     def parse_items(self, response):
         selector = response.selector
@@ -64,16 +42,9 @@ class ThreadSpider(CrawlSpider):
         thread_url = response.url
         thread_id = re.search('t=([0-9]+).*', thread_url).group(1)
 
-        thread = ThreadItem()
-        thread['fc_id'] = thread_id
-        thread['title'] = response.css(f'span.cmega::text').extract_first()
-        thread['user_fc_id'] = 1
-
-        yield thread
-
         for item in selector.xpath(POSTS_LIST_XPATH):
             post = PostItem()
-            post['thread_fc_id'] = thread['fc_id']
+            post['thread_fc_id'] = thread_id
             for attr, xpath in POST_ITEM_XPATH_FIELDS.items():
                 post[attr] = get_attr(attr, item.xpath(xpath))
             yield post

@@ -16,7 +16,7 @@ SPIDER_MODULES = ['fc_scrapper.spiders']
 NEWSPIDER_MODULE = 'fc_scrapper.spiders'
 
 DATABASE = config.DATABASE
-
+LOG_ENABLED = False
 # LOG_FILE = config.LOG_FILE
 #
 # LOG_LEVEL = config.LOG_LEVEL

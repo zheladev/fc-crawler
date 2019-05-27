@@ -19,14 +19,10 @@ class PostPipeline(BasePipeline):
             session = self.Session()
             item['content'] = process_content(item['content'])
             post = Post(**item)
-            print(f'created post {post}')
             try:
-                print('adding post...  ', end='')
                 session.add(post)
                 session.commit()
-                print('post added!')
             except SQLAlchemyError:
-                print('failed.')
                 session.rollback()
             finally:
                 session.close()

@@ -10,14 +10,10 @@ class ThreadPipeline(BasePipeline):
         if isinstance(item, ThreadItem):
             session = self.Session()
             thread = Thread(**item)
-            print(f'created item {thread}')
             try:
-                print('adding thread...  ', end='')
                 session.add(thread)
                 session.commit()
-                print('thread added!')
             except SQLAlchemyError:
-                print('failed.')
                 session.rollback()
             finally:
                 session.close()
