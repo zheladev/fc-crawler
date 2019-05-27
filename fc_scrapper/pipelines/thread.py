@@ -7,9 +7,8 @@ from fc_scrapper.pipelines.base import BasePipeline
 
 class ThreadPipeline(BasePipeline):
     def process_item(self, item, spider):
-        session = self.Session()
         if isinstance(item, ThreadItem):
-            print('hi')
+            session = self.Session()
             thread = Thread(**item)
             print(f'created item {thread}')
             try:

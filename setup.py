@@ -23,6 +23,8 @@ quality_require = [
 scripts = [
     'initdb = '
     'fc_scrapper.scripts.initdb:main',
+    'crawl_general = '
+    'fc_scrapper:main',
 ]
 
 setup(
@@ -46,9 +48,6 @@ setup(
     },
     install_requires=requires,
     entry_points={
-        'paste.app_factory': [
-            'main = proposal_tool_be:main',
-        ],
         'console_scripts': scripts
     },
 )

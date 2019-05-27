@@ -73,7 +73,7 @@ class ThreadSpider(CrawlSpider):
 
         for item in selector.xpath(POSTS_LIST_XPATH):
             post = PostItem()
-            post['thread_id'] = thread['fc_id']
+            post['thread_fc_id'] = thread['fc_id']
             for attr, xpath in POST_ITEM_XPATH_FIELDS.items():
                 post[attr] = get_attr(attr, item.xpath(xpath))
             yield post
@@ -101,6 +101,10 @@ def get_content(content):
     #       check if quote contains reference to other post
     #       if post, save reference
     #       else, save contents in message itself
+
+    # TODO: save emoticons (images) and their position within the message
+
+    # TODO: save quote position within message
 
     # FIXME: raw_message_lines may break if quote is found
     #        in between two bodies of text
