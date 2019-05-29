@@ -27,10 +27,6 @@ class UserSpider(CrawlSpider):
     name = 'fc_user_spider'
     allowed_domains = ['forocoches.com']
 
-    # TODO: make script to feed start_urls and run several in parallel
-    start_urls = [f'https://www.forocoches.com/foro/member.php?u={uid}'
-                  for uid in range(1, 1000000)]
-
     def parse(self, response):
         selector = response.selector
         print(f'Crawling: {response.url}')
@@ -41,11 +37,7 @@ class UserSpider(CrawlSpider):
         if selector.xpath(THREAD_ITEM_XPATH_FIELDS['name']).get() is not None:
             for attr, xpath in THREAD_ITEM_XPATH_FIELDS.items():
                 user[attr] = get_attr(attr, selector.xpath(xpath))
-        else:
-            user['name'] = "DEACTIVATED_USER"
-            user['created_at'] = "DEACTIVATED_USER"
-            user['status'] = "DEACTIVATED_USER"
-        yield user
+            yield user
 
 
 def get_attr(attr, xpath):
