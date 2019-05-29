@@ -11,10 +11,10 @@ class User(Base, BaseModel):
     fc_id = Column(Integer,
                    index=True, unique=True, nullable=False)
 
-    creation_date = Column(Date,
+    created_at = Column(String,
                            index=True)
-
     name = Column(String)
+    status = Column(String)
 
     def __json__(self):
         return {

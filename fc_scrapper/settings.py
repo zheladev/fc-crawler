@@ -17,6 +17,14 @@ NEWSPIDER_MODULE = 'fc_scrapper.spiders'
 
 DATABASE = config.DATABASE
 LOG_ENABLED = False
+
+# Configure item pipelines
+# See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+ITEM_PIPELINES = {
+    'fc_scrapper.pipelines.thread.ThreadPipeline': 300,
+    'fc_scrapper.pipelines.post.PostPipeline': 400,
+    'fc_scrapper.pipelines.user.UserPipeline': 500,
+}
 # LOG_FILE = config.LOG_FILE
 #
 # LOG_LEVEL = config.LOG_LEVEL
@@ -68,13 +76,6 @@ ROBOTSTXT_OBEY = True
 # EXTENSIONS = {
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 # }
-
-# Configure item pipelines
-# See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'fc_scrapper.pipelines.thread.ThreadPipeline': 300,
-    'fc_scrapper.pipelines.post.PostPipeline': 400,
-}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

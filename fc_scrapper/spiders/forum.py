@@ -7,7 +7,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from fc_scrapper.items.thread import ThreadItem
 
 FORUM_THREADS_AREA_XPATH = './/div[@class="pagenav"]'
-FORUM_THREADS_RE = r'(.+)(f=[0-9]+)((&page=[0-9]+)|())?'
+FORUM_THREADS_RE = r'(.+)(f=[0-9]+)((&page=[0-9]{2})|())?'
 
 THREAD_LIST_XPATH = '//tbody[contains(@id, "threadbits_forum_")]/tr'
 
