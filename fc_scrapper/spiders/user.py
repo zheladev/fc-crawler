@@ -19,11 +19,6 @@ class UserSpider(CrawlSpider):
     """
     Crawls all users
     """
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._threads_to_crawl = kwargs.get('threads')
-
     name = 'fc_user_spider'
     allowed_domains = ['forocoches.com']
 
@@ -69,4 +64,4 @@ def get_date(datestr: str):
         'dic': 12,
     }
     d, m, y = datestr.split("-")
-    return datetime.date(y, months[m], d)
+    return datetime.date(int(y), months[m], int(d))

@@ -14,7 +14,7 @@ from fc_scrapper.spiders.forum import ForumSpider
 from fc_scrapper.spiders.thread import ThreadSpider
 from fc_scrapper.spiders.user import UserSpider
 
-USER_NUMBER = 1000
+USER_NUMBER = 100000
 
 
 def main(argv=sys.argv):
