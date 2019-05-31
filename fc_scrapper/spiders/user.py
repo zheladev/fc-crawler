@@ -1,4 +1,5 @@
 import re
+import datetime
 
 from scrapy.spiders import CrawlSpider
 
@@ -44,9 +45,28 @@ def get_attr(attr, xpath):
         'name':
             lambda x: x.get()[:-1],
         'created_at':
-            lambda x: x.get(),  # TODO: convert to proper date
+            lambda x: get_date(x.get()),  # TODO: convert to proper date
         'status':
             lambda x: x.get(),
     }
 
     return _lambdas[attr](xpath)
+
+
+def get_date(datestr: str):
+    months = {
+        'ene': 1,
+        'feb': 2,
+        'mar': 3,
+        'abr': 4,
+        'may': 5,
+        'jun': 6,
+        'jul': 7,
+        'ago': 8,
+        'sep': 9,
+        'oct': 10,
+        'nov': 11,
+        'dic': 12,
+    }
+    d, m, y = datestr.split("-")
+    return datetime.date(y, months[m], d)

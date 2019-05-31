@@ -1,14 +1,12 @@
 from sqlalchemy import *
 from sqlalchemy.engine import Engine
-from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import configure_mappers
 
 from fc_scrapper import settings
 from fc_scrapper.models.base import Base
-from fc_scrapper.models.user import User  # noqa
-from fc_scrapper.models.thread import Thread  # noqa
 from fc_scrapper.models.post import Post  # noqa
-
+from fc_scrapper.models.thread import Thread  # noqa
+from fc_scrapper.models.user import User  # noqa
 
 configure_mappers()
 

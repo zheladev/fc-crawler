@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint, Date, \
     String
-from sqlalchemy.orm import relationship
 
 from fc_scrapper.models.base import BaseModel, Base, CASCADE
 
@@ -18,24 +17,15 @@ class Post(Base, BaseModel):
 
     thread_fc_id = Column(Integer,
                           ForeignKey("thread.fc_id", ondelete=CASCADE),
-                          index=True, nullable=False,)
+                          index=True, nullable=False, )
     # thread = relationship('Thread', foreign_keys=[thread_fc_id])
 
     posted_at = Column(Date,
                        index=True)
 
     user_fc_id = Column(Integer,
-                        # ForeignKey("User.fc_id", ondelete=CASCADE)
+                        ForeignKey("user.fc_id", ondelete=CASCADE)
                         )
     # user = relationship('User')
 
     content = Column(String)
-
-    def __json__(self):
-        return {
-            'id': self.id,
-            'fc_id': self.fc_id,
-            'thread_fc_id': self.thread_fc_id,
-            'user_fc_id': self.user_fc_id,
-            'content': self.content
-        }

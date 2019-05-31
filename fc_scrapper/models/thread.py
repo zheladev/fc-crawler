@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, UniqueConstraint, Date, \
-    String
-from sqlalchemy.orm import relationship
+    String, ForeignKey
 
-from fc_scrapper.models.base import BaseModel, Base
+from fc_scrapper.models.base import BaseModel, Base, CASCADE
 
 
 class Thread(Base, BaseModel):
@@ -18,16 +17,8 @@ class Thread(Base, BaseModel):
 
     # user = relationship('User')
     user_fc_id = Column(Integer,
-                        # ForeignKey("User.fc_id", ondelete=CASCADE)
+                        ForeignKey("user.fc_id", ondelete=CASCADE)
                         )
 
     title = Column(String, nullable=True)  # remove nullable
     # posts = relationship('Post', backref="Thread")
-
-    def __json__(self):
-        return {
-            'id': self.id,
-            'fc_id': self.fc_id,
-            'user_fc_id': self.user_fc_id,
-            'title': self.title
-        }
