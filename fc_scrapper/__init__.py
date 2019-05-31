@@ -28,7 +28,7 @@ def main(argv=sys.argv):
     if opt not in ['users', 'all', 'threads']:
         exit(1)
     if opt in ['users', 'all']:
-        crawl_users(runner)
+        crawl_users_parallel(runner)
     if opt in ['threads', 'all']:
         crawl_threads(runner)
 
@@ -83,7 +83,7 @@ def crawl_users_parallel(runner):
                  for uid in range(max_id + 1, max_id + 1 + USER_NUMBER)]
     i = list(map(list,
                  zip(*[iter(user_urls)] * ceil(
-                     len(user_urls) / 6))))
+                     len(user_urls) / 12))))
     for test in i:
         print('starting user crawler...')
         runner.crawl(UserSpider, start_urls=test)

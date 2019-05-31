@@ -18,14 +18,9 @@ class Post(Base, BaseModel):
     thread_fc_id = Column(Integer,
                           ForeignKey("thread.fc_id", ondelete=CASCADE),
                           index=True, nullable=False, )
-    # thread = relationship('Thread', foreign_keys=[thread_fc_id])
-
     posted_at = Column(Date,
                        index=True)
-
     user_fc_id = Column(Integer,
                         ForeignKey("user.fc_id", ondelete=CASCADE)
                         )
-    # user = relationship('User')
-
     content = Column(String)

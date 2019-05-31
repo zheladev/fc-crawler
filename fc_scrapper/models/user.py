@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, UniqueConstraint, String, Date
+from sqlalchemy.orm import relationship
 
 from fc_scrapper.models.base import BaseModel, Base
 
@@ -14,3 +15,5 @@ class User(Base, BaseModel):
                         index=True)
     name = Column(String)
     status = Column(String)
+    threads = relationship('Thread', backref="user")
+    posts = relationship('Post', backref="user")
