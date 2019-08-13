@@ -33,6 +33,11 @@ class UserSpider(CrawlSpider):
             for attr, xpath in THREAD_ITEM_XPATH_FIELDS.items():
                 user[attr] = get_attr(attr, selector.xpath(xpath))
             yield user
+        else:
+            user['name'] = "DESACTIVADO O INACTIVO"
+            user['created_at'] = datetime.date(1900, 1, 1)
+            user['status'] = ""
+            yield user
 
 
 def get_attr(attr, xpath):

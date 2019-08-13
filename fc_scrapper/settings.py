@@ -8,14 +8,22 @@
 #     https://doc.scrapy.org/en/latest/topics/settings.html
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-import config
+# import config
 
 BOT_NAME = 'fc_scrapper'
 
 SPIDER_MODULES = ['fc_scrapper.spiders']
 NEWSPIDER_MODULE = 'fc_scrapper.spiders'
 
-DATABASE = config.DATABASE
+DATABASE = {
+    'drivername': 'postgres',
+    'host': '127.0.0.1',
+    'port': '5432',
+    'username': 'postgres',
+    'password': '',
+    'database': 'fc_data'
+}
+
 LOG_ENABLED = False
 
 # Configure item pipelines

@@ -1,3 +1,4 @@
+import datetime
 import sys
 import time
 from math import ceil
@@ -5,6 +6,7 @@ from math import ceil
 from scrapy.crawler import CrawlerRunner
 from scrapy.settings import Settings
 from sqlalchemy import func
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from twisted.internet import reactor
 
@@ -25,10 +27,12 @@ def main(argv=sys.argv):
     crawler_settings.setmodule(settings)
     runner = CrawlerRunner(settings=crawler_settings)
 
+    if opt in ['missing_users']:
+        crawl_missing_users()
     if opt not in ['users', 'all', 'threads']:
         exit(1)
     if opt in ['users', 'all']:
-        crawl_users_parallel(runner)
+        crawl_users(runner)
     if opt in ['threads', 'all']:
         crawl_threads(runner)
 
@@ -56,6 +60,30 @@ def crawl_threads(runner):
     runner.crawl(ForumSpider, threads=threads_to_crawl).addCallback(
         lambda x: _crawl_threads(threads_to_crawl)
     )
+
+
+def crawl_missing_users():
+    s = sessionmaker(bind=db_connect())()
+    max_id = s.query(
+        func.max(User.fc_id)).one_or_none()[0]
+    if max_id is not None:
+        ids = s.query(User.fc_id).order_by(User.fc_id).all()
+        refined_ids = list(map(lambda x: x[0], ids))
+        not_crawled_ids = sorted(set(range(1, max_id)) - set(refined_ids))
+        print(not_crawled_ids)
+
+        for not_crawled_id in not_crawled_ids:
+            user = User(fc_id=not_crawled_id,
+                        name="PERFIL SIN ACTIVIDAD",
+                        created_at=datetime.date(1900, 1, 1),
+                        status="")
+            try:
+                s.add(user)
+                s.commit()
+            except SQLAlchemyError:
+                s.rollback()
+                print(f'Couldn\'t add user with id {not_crawled_id}')
+        s.close()
 
 
 # SLOWER
